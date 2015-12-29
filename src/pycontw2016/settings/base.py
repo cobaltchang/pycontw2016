@@ -124,16 +124,25 @@ USE_I18N = True
 
 USE_L10N = True
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'en-us'
 
 LANGUAGES = [
     ('zh-hant', 'Traditional Chinese'),
-    ('en',      'English'),
+    ('en-us',   'English'),
 ]
 
 FALLBACK_LANGUAGE_PREFIXES = {
     'zh': 'zh-hant',
+    'en': 'en-us',
 }
+
+# HACK: Django does not really recognize 'en-us', only 'en'.
+# Here we monkey-patch its language mapping to fix this.
+from django.conf import locale
+if 'en-us' not in locale.LANG_INFO:
+    locale.LANG_INFO['en-us'] = locale.LANG_INFO['en']
+    locale.LANG_INFO['en-us']['code'] = 'en-us',
+    locale.LANG_INFO['en'] = {'fallback': 'en-us'}
 
 # Path to the local .po and .mo files
 LOCALE_PATHS = (
